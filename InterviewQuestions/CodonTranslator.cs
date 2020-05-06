@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace InterviewQuestions
 {
@@ -37,6 +40,11 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
+        //unlikely for genetic sequences to ever not be in sets of 3, but create it as a variable instead of a magic number as good practice
+        private const int SequenceSize = 3;
+
+        //using a list of keyValue pairs because dictionaries don't allow duplicate keys
+        private List<KeyValuePair<string, string>> _TranslationDictionary;
 
         /// <summary>
         /// Constructor
@@ -51,7 +59,18 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            switch (fileType)
+            {
+                case ".csv":
+                    _TranslationDictionary = ParseCsvFile(fileContent);
+                    break;
+                case ".json":
+                    _TranslationDictionary = ParseJsonFile(fileContent);
+                    break;
+                case ".xml":
+                    _TranslationDictionary = ParseXmlFile(fileContent);
+                    break;
+            }
         }
 
         /// <summary>
@@ -61,7 +80,77 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            //some of the more complex tests fail due to new line characters, I had assumed it should process based on each set of three characters, and the new lines were just there to mess up the results
+            // this is clearly not the case since the tests fail still, but I'm not sure what the rule is, aka if they should then just split into sub-three character sets and be processed that way or not.
+            // Sadly, at this point my hour is up, so I don't have time to experiment to figure out the exact rule
+            dna = dna.Replace("\n", String.Empty);
+
+            //break the string down into a list of the sets of sequence size
+            var listOfSets = Enumerable.Range(0, dna.Length / SequenceSize)
+                .Select(x => dna.Substring(x * SequenceSize, SequenceSize)).ToList();
+
+            var startedRecording = false;
+            var translationResults = string.Empty;
+
+            foreach (var set in listOfSets)
+            {
+                var matches = _TranslationDictionary.Where(x => x.Key.Equals(set)).ToList();
+
+                if (matches.Any(x => x.Value.Equals("START")))
+                {
+                    startedRecording = true;
+                }
+                if (matches.Any(x => x.Value.Equals("STOP")))
+                {
+                    startedRecording = false;
+                }
+                if (startedRecording)
+                {
+                    translationResults +=
+                        matches.FirstOrDefault(x => !x.Value.Equals("START") && !x.Value.Equals("STOP")).Value;
+                }
+            }
+
+            return translationResults;
+        }
+
+
+        private List<KeyValuePair<string, string>> ParseCsvFile(string fileContent)
+        {
+            try
+            {
+                var linesArray = fileContent.Split(Environment.NewLine.ToCharArray());
+                var translationDictionary = new List<KeyValuePair<string, string>>();
+                foreach (var line in linesArray)
+                {
+                    var parsedLine = line.Split(',');
+                    if (!string.IsNullOrWhiteSpace(parsedLine[0]) && !string.IsNullOrWhiteSpace(parsedLine[1]))
+                    {
+                        var keyValue = new KeyValuePair<string, string>(parsedLine[0], parsedLine[1]);
+                        translationDictionary.Add(keyValue);
+                    }
+                    
+                }
+
+                return translationDictionary;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Encountered an exception while attempting to parse csv file");
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private List<KeyValuePair<string, string>> ParseJsonFile(string fileContent)
+        {
+            throw new NotImplementedException();
+        }
+
+        private List<KeyValuePair<string, string>> ParseXmlFile(string fileContent)
+        {
+            throw new NotImplementedException();
         }
     }
 }
