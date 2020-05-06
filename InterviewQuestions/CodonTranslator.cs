@@ -1,4 +1,7 @@
+using InterviewQuestions.Models;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace InterviewQuestions
 {
@@ -37,7 +40,12 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
+        /// <summary>
+        /// Private member to store the whole deserialized json data.
+        /// </summary>
+        private CodonMapper codeMappedData;
 
+        private static int CODE_FOR_AA_LENGTH = 3;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -49,9 +57,24 @@ namespace InterviewQuestions
             BuildTranslationMapFromFileContent(fileContent, Path.GetExtension(codonTableFileName));
         }
 
+
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            //I have made the implementation for the json file here.
+            switch (fileType)
+            {
+                case ".json":
+                    codeMappedData = Newtonsoft.Json.JsonConvert.DeserializeObject<CodonMapper>(fileContent);
+                    break;
+                //implementation for xml file 
+                case ".xml":
+                    break;
+                case ".csv":
+                    break;
+                default:
+                    throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}", fileType, fileContent));
+
+            }
         }
 
         /// <summary>
@@ -61,7 +84,52 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            if (dna.Length < 3)
+            {
+                return string.Empty;
+            }
+            StringBuilder sb = new StringBuilder();
+            string subStr = string.Empty;
+            for (int i = 0; i < dna.Length - 2; i++)
+            {
+                subStr = dna.Substring(i, CODE_FOR_AA_LENGTH);
+                if (codeMappedData.Starts.FirstOrDefault().Equals(subStr))
+                {
+                    sb.Append('M');
+                    i += 2;
+                    continue;
+                }
+                else
+                {
+                    if (!sb.ToString().Contains('M'))
+                    {
+                        continue;
+                    }
+                    if (CheckStop(subStr))
+                    {
+                        break;
+                    }
+                    var foundCodon = codeMappedData.CodOnMap.FirstOrDefault(x => x.Codon.Equals(subStr));
+                    if (foundCodon != null)
+                    {
+                        sb.Append(foundCodon.AminoAcid);
+                        i += 2;
+                    }
+                }
+            }
+
+
+            return string.Empty;
+        }
+
+        private bool CheckStart(string substr)
+        {
+            return codeMappedData.Starts.Contains(substr);
+        }
+
+        private bool CheckStop(string substr)
+        {
+            return codeMappedData.Stops.Contains(substr);
         }
     }
 }
