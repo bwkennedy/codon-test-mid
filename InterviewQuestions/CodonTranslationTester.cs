@@ -172,7 +172,7 @@ namespace InterviewQuestions
                      YGSQKTVDTEKLFDLEAPEKEKRTSRDVTMSSLDPWNSNISPSPVRKSVTPSPYNVTK
                      HRNRHLQNIQDSQSGKNGITPTTMSTSSSDDFVPVKDGENFCWVHSMEPDRRPSKKRL
                      VDFSNKSNVNVGQVKDIHGRIPEML"
-                    .Replace("\r\n", "").Replace("\t", "").Replace(" ", "");
+                    .Replace("\n", "").Replace("\t", "").Replace(" ", "");
 
             var result = codonTranslator.Translate(sample);
 
@@ -197,7 +197,7 @@ namespace InterviewQuestions
                      YGSQKTVDTEKLFDLEAPEKEKRTSRDVTMSSLDPWNSNISPSPVRKSVTPSPYNVTK
                      HRNRHLQNIQDSQSGKNGITPTTMSTSSSDDFVPVKDGENFCWVHSMEPDRRPSKKRL
                      VDFSNKSNVNVGQVKDIHGRIPEML"
-                    .Replace("\r\n", "").Replace("\t", "").Replace(" ", "");
+                    .Replace("\n", "").Replace("\t", "").Replace(" ", "");
 
             var result = codonTranslator.Translate("AACGT" + sample);
 

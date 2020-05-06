@@ -18,7 +18,7 @@ namespace InterviewQuestions
      *  For example, the first line:
      *  CTA,L
      *  should be interpreted as: "the codon CTA is translated to the amino acid L"
-     *  
+     *      
      *  
      *  You should not assume that the input sequence begins with the start codon. Any nucleotides before the start codon should be ignored.
      *  You should not assume that the input sequence ends with the stop codon. Any nucleotides after the stop codon should be ignored.
@@ -38,11 +38,13 @@ namespace InterviewQuestions
     public class CodonTranslator
     {
 
+        string[] dataMapping = new string[1000];
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="codonTableFileName">Filename of the DNA codon table.</param>
-        public CodonTranslator(string codonTableFileName)
+        public CodonTranslator(string codonTableFileName)   
         {
             var file = new StreamReader(codonTableFileName);
             var fileContent = file.ReadToEnd();
@@ -51,7 +53,15 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+
+           if(fileType.Equals(".csv"))
+            {
+               dataMapping = fileContent.Split(new[] { "\n" }, System.StringSplitOptions.None);
+               
+            }
+                
+            //throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+                    
         }
 
         /// <summary>
@@ -61,7 +71,51 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            string dnaCode = string.Empty;
+            int codeLen = 3;
+            bool startToken = false;
+            bool stopToken = false;
+            string result = string.Empty;
+            dna = dna.Replace("\n", "");
+            for (int i = 0; i < dna.Length; i++)
+            {
+                if(stopToken)
+                    break;
+
+                if (!startToken)
+                    dnaCode = dna.Substring(i, codeLen);
+                else
+                {
+                    i += codeLen-1;
+                    if (i + codeLen > dna.Length)
+                        break;
+                    dnaCode = dna.Substring(i, codeLen);
+                }
+                foreach (string item in dataMapping)
+                {
+                    if(item.Contains(dnaCode))
+                    {
+                        string ansCode = item.Split(',')[1].ToString();
+                        if ( ansCode == "START")
+                        {
+                            startToken = true;
+                            ansCode = "M";
+                        }
+                        else if (ansCode == "STOP")
+                        {
+                            stopToken = true;
+                        }
+                        //Read codes only when stoptoken is not found
+                        if(startToken && !stopToken)
+                        {
+                            result += ansCode;
+                            break;
+                        }
+
+                    }
+                }
+            }
+            return result;
         }
     }
-}
+}   
