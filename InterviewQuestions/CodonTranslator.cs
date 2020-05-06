@@ -117,16 +117,24 @@ namespace InterviewQuestions
                     }
                 }
             }
-
-
-            return string.Empty;
+            return sb.ToString();
         }
 
+        /// <summary>
+        /// To check whether the start dna sequence is present or not
+        /// </summary>
+        /// <param name="substr"></param>
+        /// <returns>bool</returns>
         private bool CheckStart(string substr)
         {
             return codeMappedData.Starts.Contains(substr);
         }
 
+        /// <summary>
+        /// To check whether the stop dna sequence is present or not
+        /// </summary>
+        /// <param name="substr"></param>
+        /// <returns>bool</returns>
         private bool CheckStop(string substr)
         {
             return codeMappedData.Stops.Contains(substr);
