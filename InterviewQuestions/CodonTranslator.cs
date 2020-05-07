@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace InterviewQuestions
@@ -59,17 +62,45 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            string cleanFileContent = Regex.Replace(fileContent, @"\s+", "");
+            if (fileType == ".xml")
+            {
+                string cleanFileContent = Regex.Replace(fileContent, @"\s+", "");
 
-            string rawStartsData = SuperSubstring(cleanFileContent, "<Starts>", "</Starts>");
-            startCodons = FilterStrings(rawStartsData);
+                string rawStartsData = SuperSubstring(cleanFileContent, "<Starts>", "</Starts>");
+                startCodons = FilterStrings(rawStartsData);
 
 
-            string rawEndsData = SuperSubstring(cleanFileContent, "<Stops>", "</Stops>");
-            endCodons = FilterStrings(rawEndsData);
+                string rawEndsData = SuperSubstring(cleanFileContent, "<Stops>", "</Stops>");
+                endCodons = FilterStrings(rawEndsData);
 
-            string codonMap = SuperSubstring(cleanFileContent, "<CodonMap>", "</CodonMap>");
-            codonsToTranslations = FilterPairs(codonMap);
+                string codonMap = SuperSubstring(cleanFileContent, "<CodonMap>", "</CodonMap>");
+                codonsToTranslations = FilterPairs(codonMap);
+            }
+            else if (fileType == ".json")
+            {
+                dynamic stuff = JsonConvert.DeserializeObject(fileContent);
+                
+                JArray starts = stuff.Starts;
+                startCodons = new List<string>();
+                foreach (JToken item in starts)
+                {
+                    startCodons.Add(item.ToString());
+                }
+
+                JArray stops = stuff.Stops;
+                endCodons = new List<string>();
+                foreach (JToken item in stops)
+                {
+                    endCodons.Add(item.ToString());
+                }
+
+                JArray map = stuff.CodonMap;
+                codonsToTranslations = new Dictionary<string, string>();
+                foreach (JObject item in map)
+                {
+                    codonsToTranslations.Add(item.GetValue("Codon").ToString(), item.GetValue("AminoAcid").ToString());
+                }
+            }
 
 
             //throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
