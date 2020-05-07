@@ -1,4 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+using System.Xml;
+using NUnit.Framework;
 
 namespace InterviewQuestions
 {
@@ -37,7 +43,9 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
-
+        private List<string> startCodons;
+        private List<string> endCodons;
+        private Dictionary<string, string> codonsToTranslations;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -51,7 +59,61 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            string cleanFileContent = Regex.Replace(fileContent, @"\s+", "");
+
+            string rawStartsData = SuperSubstring(cleanFileContent, "<Starts>", "</Starts>");
+            startCodons = FilterStrings(rawStartsData);
+
+
+            string rawEndsData = SuperSubstring(cleanFileContent, "<Stops>", "</Stops>");
+            endCodons = FilterStrings(rawEndsData);
+
+            string codonMap = SuperSubstring(cleanFileContent, "<CodonMap>", "</CodonMap>");
+            codonsToTranslations = FilterPairs(codonMap);
+
+
+            //throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+        }
+
+        private string SuperSubstring(string content, string firstString, string secondString)
+        {
+            int pFrom = content.IndexOf(firstString) + firstString.Length;
+            int pTo = content.LastIndexOf(secondString);
+
+            string result = content.Substring(pFrom, pTo - pFrom);
+            return result;
+        }
+
+        private Dictionary<string, string> FilterPairs(string input)
+        {
+            Dictionary<string, string> output = new Dictionary<string, string>();
+            string currentCodon = "";
+            string currentAcid = "";
+            while (input.Length > 0)
+            {
+                input = input.Substring(18);
+                currentCodon = input.Substring(0, 3);
+                input = input.Substring(22);
+                currentAcid = input.Substring(0, 1);
+                output.Add(currentCodon, currentAcid);
+                input = input.Substring(25);
+
+            }
+
+            return output;
+        }
+
+        private List<string> FilterStrings(string input)
+        {
+            List<string> output = new List<string>();
+            while (input.Length > 0)
+            {
+                input = input.Substring(8);
+                output.Add(input.Substring(0, 3));
+                input = input.Substring(12);
+            }
+
+            return output;
         }
 
         /// <summary>
@@ -61,7 +123,34 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            string output = "";
+
+            int indexOfFirstStartCodon = Int32.MaxValue;
+            int currentIndex = 0;
+            foreach(string startCodon in startCodons)
+            {
+                currentIndex = dna.IndexOf(startCodon);
+                if (currentIndex < indexOfFirstStartCodon)
+                    indexOfFirstStartCodon = currentIndex;
+            }
+
+            dna = dna.Substring(indexOfFirstStartCodon);
+            while (dna.Length > 2)
+            {
+                string currentCodon = dna.Substring(0, 3);
+                if (endCodons.Contains((currentCodon)))
+                {
+
+                    return output;
+                }
+                else
+                {
+
+                    output = output + codonsToTranslations[currentCodon];
+                    dna = dna.Substring(3);
+                }
+            }
+            return output;
         }
     }
 }
