@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace InterviewQuestions
 {
@@ -103,7 +105,29 @@ namespace InterviewQuestions
             }
             else if (fileType.Equals(".xml"))
             {
+                XDocument doc = XDocument.Parse(fileContent);
+                //get starts
+                var startsXml = doc.Root.Elements("Starts").Elements("string").ToList();
+                foreach(XElement starts in startsXml)
+                {
+                    startSequence.Add(new KeyValuePair<string, string>(starts.Value.ToString(), "Start"));
+                }
 
+                //get stops
+                var stopsXml = doc.Root.Elements("Stops").Elements("string").ToList();
+                foreach(XElement stops in stopsXml)
+                {
+                    endSequence.Add(new KeyValuePair<string, string>(stops.Value.ToString(), "Stop"));
+                }
+
+                //get codonpairs
+                var codonPairs = doc.Root.Elements("CodonMap").Elements("CodonPair").ToList();
+                foreach(XElement pair in codonPairs)
+                {
+                    string codon = pair.Element("Codon").Value.ToString();
+                    string aminoAcid = pair.Element("AminoAcid").Value.ToString();
+                    codonMap.Add(new KeyValuePair<string, string>(codon, aminoAcid));
+                }
             }
             //throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
         }
