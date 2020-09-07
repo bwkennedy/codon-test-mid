@@ -49,7 +49,8 @@ namespace InterviewQuestions
             var fileContent = file.ReadToEnd();
             string outputAmino;
             BuildTranslationMapFromFileContent(fileContent, Path.GetExtension(codonTableFileName));
-            outputAmino = Translate();
+            string inputDna = "";
+            outputAmino = Translate(inputDna);
 
         }
 
@@ -76,7 +77,7 @@ namespace InterviewQuestions
              * continue reading codons adding the translation to the output amino acid
              * when a stop codon is found stop reading the dna string
              */
-            string outputAmino;
+            string outputAmino = "";
             string tempAmino;
             bool startFound = false;
             bool stopNotFound = true;
@@ -85,7 +86,7 @@ namespace InterviewQuestions
             {
                 int dnaIndex = 0;
                 const int aminoLength = 3;
-                CopyTo(dnaIndex, dna, tempAmino, aminoLength);
+            //    CopyTo(dnaIndex, dna, tempAmino, aminoLength);
 
                 if(startFound)
                 {
