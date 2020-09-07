@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +82,24 @@ namespace InterviewQuestions
             }
             else if (fileType.Equals(".json"))
             {
+                dynamic json = JsonConvert.DeserializeObject<dynamic>(fileContent);
 
+                dynamic starts = json.Starts;
+                foreach (string start in starts){
+                    startSequence.Add(new KeyValuePair<string, string>(start, "START"));
+                }
+                
+                var stops = json.Stops;
+                foreach (string stop in stops)
+                {
+                    endSequence.Add(new KeyValuePair<string, string>(stop, "STOP"));
+                }
+
+                dynamic codons = json.CodonMap;
+                foreach (dynamic codon in codons)
+                {
+                    codonMap.Add(new KeyValuePair<string, string>((string)codon["Codon"], (string)codon["AminoAcid"]));
+                }
             }
             else if (fileType.Equals(".xml"))
             {
