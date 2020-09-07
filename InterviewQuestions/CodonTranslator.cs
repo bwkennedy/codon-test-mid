@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace InterviewQuestions
@@ -46,12 +47,19 @@ namespace InterviewQuestions
         {
             var file = new StreamReader(codonTableFileName);
             var fileContent = file.ReadToEnd();
+            string outputAmino;
             BuildTranslationMapFromFileContent(fileContent, Path.GetExtension(codonTableFileName));
+            outputAmino = Translate();
+
         }
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
             throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            /* build a 2D array from the csv
+             * the first column will be the codon to match to
+             * the second will be the mapping
+             */
         }
 
         /// <summary>
@@ -61,7 +69,44 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            /*each nucleotide is a string of three characters
+             * read in three characters, then compare to the mapping provided in the CSV
+             * if there is a match, then read the next word
+             * if the next word is start then begin building the output amino acid
+             * continue reading codons adding the translation to the output amino acid
+             * when a stop codon is found stop reading the dna string
+             */
+            string outputAmino;
+            string tempAmino;
+            bool startFound = false;
+            bool stopNotFound = true;
+
+            do
+            {
+                int dnaIndex = 0;
+                const int aminoLength = 3;
+                CopyTo(dnaIndex, dna, tempAmino, aminoLength);
+
+                if(startFound)
+                {
+                    /* concatenate outputAmino with the mapping
+                     * if tempAmino matches one of the stop sequences
+                     * stopNotFound = false
+                     */
+                }
+
+                else
+                {
+                    /*if tempAmino matches start
+                     * startFound = true
+                     */
+                }
+
+            }
+            while (stopNotFound);
+
+
+            return outputAmino;
         }
     }
 }
