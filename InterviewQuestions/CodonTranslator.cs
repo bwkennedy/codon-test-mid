@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace InterviewQuestions
 {
@@ -37,6 +41,9 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
+        List<KeyValuePair<string, string>> codonMap = new List<KeyValuePair<string, string>>();
+        List<KeyValuePair<string, string>> startSequence = new List<KeyValuePair<string, string>>();
+        List<KeyValuePair<string, string>> endSequence = new List<KeyValuePair<string, string>>();
 
         /// <summary>
         /// Constructor
@@ -51,7 +58,36 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            StringReader strReader = new StringReader(fileContent);
+            string line;
+            if (fileType.Equals(".csv"))
+            {
+                while ((line = strReader.ReadLine()) != null)
+                {
+                    string[] splitString = line.Split(',');
+                    if (splitString[1].Equals("START"))
+                    {
+                        startSequence.Add(new KeyValuePair<string, string>(splitString[0], splitString[1]));
+                    }
+                    else if (splitString[1].Equals("STOP"))
+                    {
+                        endSequence.Add(new KeyValuePair<string, string>(splitString[0], splitString[1]));
+                    }
+                    else
+                    {
+                        codonMap.Add(new KeyValuePair<string, string>(splitString[0], splitString[1]));
+                    }
+                }
+            }
+            else if (fileType.Equals(".json"))
+            {
+
+            }
+            else if (fileType.Equals(".xml"))
+            {
+
+            }
+            //throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
         }
 
         /// <summary>
@@ -61,7 +97,46 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            StringBuilder aaSequence = new StringBuilder();
+            int startIndex =-1;
+
+            //find start index
+            for (int i = 0; i < dna.Length-3; i++)
+            {
+                string subThree = dna.Substring(i, 3);
+
+                //check if the three chars are a match in startSequence list<keyvaluepair>
+                KeyValuePair<string, string> startValue = startSequence.Where(kvp => kvp.Key.Equals(subThree)).FirstOrDefault();
+                if (startValue.Key != null)
+                {
+                    startIndex = i;
+                    aaSequence.Append("M");
+                    break;
+                }
+            }
+
+            //if start index found then process
+            if(startIndex != -1)
+            {
+                //process string in chunks of 3 starting after start
+                for (int i = startIndex+3; i < dna.Length - 3; i+=3 )
+                {
+                    string subThree = dna.Substring(i, 3);
+                    //check if the three chars are a match in endSequence 
+                    KeyValuePair<string, string> endValue =  endSequence.Where(kvp => kvp.Key.Equals(subThree)).FirstOrDefault();
+                    if (endValue.Key != null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        KeyValuePair<string, string> aaValue = codonMap.Where(kvp => kvp.Key.Equals(subThree)).First();
+                        aaSequence.Append(aaValue.Value);
+                    }
+                }
+            }
+
+            return aaSequence.ToString();
         }
     }
 }
