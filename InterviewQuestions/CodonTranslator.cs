@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace InterviewQuestions
@@ -42,8 +44,14 @@ namespace InterviewQuestions
         /// Constructor
         /// </summary>
         /// <param name="codonTableFileName">Filename of the DNA codon table.</param>
+        private string startCodon;
+        private List<string> stopCodon;
+        private Dictionary<string, string> codonMap;
+
         public CodonTranslator(string codonTableFileName)
         {
+            stopCodon = new List<string>(){};
+            codonMap = new Dictionary<string, string>(){};
             var file = new StreamReader(codonTableFileName);
             var fileContent = file.ReadToEnd();
             BuildTranslationMapFromFileContent(fileContent, Path.GetExtension(codonTableFileName));
@@ -51,7 +59,45 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            //Console.WriteLine(fileType);
+            if(fileType == ".csv")
+                        {
+                // reader is no a thing. FIX THIS
+                //Fix THIS
+                using (StringReader reader = new StringReader(fileContent))
+                    {
+                        string line;
+                        //Console.WriteLine(fileType);
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            var values = line.Split(',');
+                            //Console.WriteLine("HI");
+                            if(values[1] == "START"){
+                                startCodon = values[0];
+                                //Console.WriteLine(values[0], values[1]);
+                            }
+                            else if(values[1] == "STOP"){
+                                stopCodon.Add(values[0]);
+                            }
+                            else{
+                                codonMap.Add(values[0], values[1]);
+                            }  
+                        }
+                    }
+                    // while (!reader.EndOfStream)
+                    // {
+                    //     var values = line.Split(',');
+                    //     if(values[1] == "START"){
+                    //         startCodon = values[0];
+                    //     }
+                    //     else if(values[1] == "STOP"){
+                    //         stopCodon.Add(values[0]);
+                    //     }
+                    //     else{
+                    //         codonMap.Add(values[0], values[1]);
+                    //     }                        
+                    // }
+                }
         }
 
         /// <summary>
@@ -61,7 +107,40 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            string aminoSequence = "";
+            bool inSequence = false;
+            int step = 1;
+            int i = 0;
+            dna = dna.Replace("\n", "");
+            //Console.WriteLine(dna);
+            while(i < dna.Length-2){
+                //Console.WriteLine(dna.Substring(i,3));
+                if(dna.Substring(i,3) == startCodon){
+                    inSequence = true;
+                    step = 3;
+                }
+                if(inSequence && stopCodon.Contains(dna.Substring(i, 3))){
+                    //Console.WriteLine("Broke");
+                    break;
+                }
+                if(inSequence)
+                {
+                    //if (i == 34)
+                    //{
+                    //    Console.WriteLine(dna.Substring(i, 3));
+                    //    Console.WriteLine(dna.Substring(i, 10));
+                    //    Console.WriteLine(codonMap[dna.Substring(i, 3)]);
+                    //}
+
+                    aminoSequence += codonMap[dna.Substring(i, 3)];
+                }
+                //Console.WriteLine(i);
+                i += step;
+            }
+            //Console.WriteLine("How did I get here");
+
+            //Console.WriteLine(aminoSequence);
+            return aminoSequence;
         }
     }
 }
