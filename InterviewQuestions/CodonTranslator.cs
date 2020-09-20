@@ -1,4 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace InterviewQuestions
 {
@@ -37,6 +42,9 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
+        private string jsonStart = "";
+        private List<string> jsonStops = new List<string>();
+        private Dictionary<string, string> translationMap = new Dictionary<string, string> ();
 
         /// <summary>
         /// Constructor
@@ -51,7 +59,27 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            if(fileType == ".json")
+            {
+                dynamic jsonFile = JsonConvert.DeserializeObject(fileContent);
+                jsonStart = jsonFile.Starts[0].ToString();
+
+                dynamic stops = jsonFile.Stops;
+                foreach (string stop in stops)
+                {
+                    jsonStops.Add(stop);
+                }
+
+                dynamic codons = jsonFile.CodonMap;
+                foreach (dynamic codon in codons)
+                {
+                    translationMap.Add(codon["Codon"].ToString(), codon["AminoAcid"].ToString()) ;
+                }
+            }
+            else
+            {
+                throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}", fileType, fileContent));
+            }         
         }
 
         /// <summary>
@@ -61,7 +89,23 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            StringBuilder aminoSequence = new StringBuilder();
+
+            //CanTranslateWithOnlyStartAndStop
+            for (int i = 0; i < dna.Length - 2; i++)
+            {
+                string substring = dna.Substring(i, 3);
+
+                if (substring == jsonStart)
+                {
+                    aminoSequence.Append("M");
+                }
+                else if (jsonStops.Contains(substring))
+                {
+                    break;
+                }
+            }
+            return aminoSequence.ToString();
         }
     }
 }
