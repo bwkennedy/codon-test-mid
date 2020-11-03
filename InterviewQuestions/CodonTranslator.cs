@@ -1,4 +1,8 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace InterviewQuestions
 {
@@ -37,6 +41,9 @@ namespace InterviewQuestions
 
     public class CodonTranslator
     {
+        public string Start;
+        public List<string> Stop = new List<string>();
+        public Dictionary<string, string> CodonMap = new Dictionary<string, string>();
 
         /// <summary>
         /// Constructor
@@ -51,7 +58,17 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            if (!string.IsNullOrEmpty(fileType) && fileType == ".json")
+            {
+                var jsonContent = JObject.Parse(fileContent);
+                Start = jsonContent["Starts"].ToObject<List<string>>().First();
+                Stop = jsonContent["Stops"].ToObject<List<string>>();
+
+                foreach (var codon in jsonContent["CodonMap"])
+                {
+                    CodonMap.Add(codon["Codon"].ToString(), codon["AminoAcid"].ToString());
+                }
+            }
         }
 
         /// <summary>
@@ -61,7 +78,22 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            var result = "M";
+            var start = dna.IndexOf(Start) + 2;
+            for (int i = start + 1; i < dna.Length; i++)
+            {
+                var codonGroup = $"{dna[i]}{dna[i + 1]}{dna[i + 2]}";
+                if (Stop.Contains(codonGroup))
+                    break;
+
+                if (CodonMap.ContainsKey(codonGroup))
+                {
+                    result += CodonMap[codonGroup];
+                    i += 2;
+                }
+            }
+
+            return result;
         }
     }
 }

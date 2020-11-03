@@ -1,1 +1,256 @@
-﻿{"Starts":["ATG"],"Stops":["TAA","TGA","TAG"],"CodonMap":[{"Codon":"GCT","AminoAcid":"A"},{"Codon":"GCC","AminoAcid":"A"},{"Codon":"GCA","AminoAcid":"A"},{"Codon":"GCG","AminoAcid":"A"},{"Codon":"CGT","AminoAcid":"R"},{"Codon":"CGC","AminoAcid":"R"},{"Codon":"CGA","AminoAcid":"R"},{"Codon":"CGG","AminoAcid":"R"},{"Codon":"AGA","AminoAcid":"R"},{"Codon":"AGG","AminoAcid":"R"},{"Codon":"AAT","AminoAcid":"N"},{"Codon":"AAC","AminoAcid":"N"},{"Codon":"GAT","AminoAcid":"D"},{"Codon":"GAC","AminoAcid":"D"},{"Codon":"TGT","AminoAcid":"C"},{"Codon":"TGC","AminoAcid":"C"},{"Codon":"CAA","AminoAcid":"Q"},{"Codon":"CAG","AminoAcid":"Q"},{"Codon":"GAA","AminoAcid":"E"},{"Codon":"GAG","AminoAcid":"E"},{"Codon":"GGT","AminoAcid":"G"},{"Codon":"GGC","AminoAcid":"G"},{"Codon":"GGA","AminoAcid":"G"},{"Codon":"GGG","AminoAcid":"G"},{"Codon":"CAT","AminoAcid":"H"},{"Codon":"CAC","AminoAcid":"H"},{"Codon":"ATT","AminoAcid":"I"},{"Codon":"ATC","AminoAcid":"I"},{"Codon":"ATA","AminoAcid":"I"},{"Codon":"TTA","AminoAcid":"L"},{"Codon":"TTG","AminoAcid":"L"},{"Codon":"CTT","AminoAcid":"L"},{"Codon":"CTC","AminoAcid":"L"},{"Codon":"CTA","AminoAcid":"L"},{"Codon":"CTG","AminoAcid":"L"},{"Codon":"AAA","AminoAcid":"K"},{"Codon":"AAG","AminoAcid":"K"},{"Codon":"ATG","AminoAcid":"M"},{"Codon":"TTT","AminoAcid":"F"},{"Codon":"TTC","AminoAcid":"F"},{"Codon":"CCT","AminoAcid":"P"},{"Codon":"CCC","AminoAcid":"P"},{"Codon":"CCA","AminoAcid":"P"},{"Codon":"CCG","AminoAcid":"P"},{"Codon":"TCT","AminoAcid":"S"},{"Codon":"TCC","AminoAcid":"S"},{"Codon":"TCA","AminoAcid":"S"},{"Codon":"TCG","AminoAcid":"S"},{"Codon":"AGT","AminoAcid":"S"},{"Codon":"AGC","AminoAcid":"S"},{"Codon":"ACT","AminoAcid":"T"},{"Codon":"ACC","AminoAcid":"T"},{"Codon":"ACA","AminoAcid":"T"},{"Codon":"ACG","AminoAcid":"T"},{"Codon":"TGG","AminoAcid":"W"},{"Codon":"TAT","AminoAcid":"Y"},{"Codon":"TAC","AminoAcid":"Y"},{"Codon":"GTT","AminoAcid":"V"},{"Codon":"GTC","AminoAcid":"V"},{"Codon":"GTA","AminoAcid":"V"},{"Codon":"GTG","AminoAcid":"V"}]}
+﻿{
+  "Starts": [
+    "ATG"
+  ],
+  "Stops": [
+    "TAA",
+    "TGA",
+    "TAG"
+  ],
+  "CodonMap": [
+    {
+      "Codon": "GCT",
+      "AminoAcid": "A"
+    },
+    {
+      "Codon": "GCC",
+      "AminoAcid": "A"
+    },
+    {
+      "Codon": "GCA",
+      "AminoAcid": "A"
+    },
+    {
+      "Codon": "GCG",
+      "AminoAcid": "A"
+    },
+    {
+      "Codon": "CGT",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "CGC",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "CGA",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "CGG",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "AGA",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "AGG",
+      "AminoAcid": "R"
+    },
+    {
+      "Codon": "AAT",
+      "AminoAcid": "N"
+    },
+    {
+      "Codon": "AAC",
+      "AminoAcid": "N"
+    },
+    {
+      "Codon": "GAT",
+      "AminoAcid": "D"
+    },
+    {
+      "Codon": "GAC",
+      "AminoAcid": "D"
+    },
+    {
+      "Codon": "TGT",
+      "AminoAcid": "C"
+    },
+    {
+      "Codon": "TGC",
+      "AminoAcid": "C"
+    },
+    {
+      "Codon": "CAA",
+      "AminoAcid": "Q"
+    },
+    {
+      "Codon": "CAG",
+      "AminoAcid": "Q"
+    },
+    {
+      "Codon": "GAA",
+      "AminoAcid": "E"
+    },
+    {
+      "Codon": "GAG",
+      "AminoAcid": "E"
+    },
+    {
+      "Codon": "GGT",
+      "AminoAcid": "G"
+    },
+    {
+      "Codon": "GGC",
+      "AminoAcid": "G"
+    },
+    {
+      "Codon": "GGA",
+      "AminoAcid": "G"
+    },
+    {
+      "Codon": "GGG",
+      "AminoAcid": "G"
+    },
+    {
+      "Codon": "CAT",
+      "AminoAcid": "H"
+    },
+    {
+      "Codon": "CAC",
+      "AminoAcid": "H"
+    },
+    {
+      "Codon": "ATT",
+      "AminoAcid": "I"
+    },
+    {
+      "Codon": "ATC",
+      "AminoAcid": "I"
+    },
+    {
+      "Codon": "ATA",
+      "AminoAcid": "I"
+    },
+    {
+      "Codon": "TTA",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "TTG",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "CTT",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "CTC",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "CTA",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "CTG",
+      "AminoAcid": "L"
+    },
+    {
+      "Codon": "AAA",
+      "AminoAcid": "K"
+    },
+    {
+      "Codon": "AAG",
+      "AminoAcid": "K"
+    },
+    {
+      "Codon": "ATG",
+      "AminoAcid": "M"
+    },
+    {
+      "Codon": "TTT",
+      "AminoAcid": "F"
+    },
+    {
+      "Codon": "TTC",
+      "AminoAcid": "F"
+    },
+    {
+      "Codon": "CCT",
+      "AminoAcid": "P"
+    },
+    {
+      "Codon": "CCC",
+      "AminoAcid": "P"
+    },
+    {
+      "Codon": "CCA",
+      "AminoAcid": "P"
+    },
+    {
+      "Codon": "CCG",
+      "AminoAcid": "P"
+    },
+    {
+      "Codon": "TCT",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "TCC",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "TCA",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "TCG",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "AGT",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "AGC",
+      "AminoAcid": "S"
+    },
+    {
+      "Codon": "ACT",
+      "AminoAcid": "T"
+    },
+    {
+      "Codon": "ACC",
+      "AminoAcid": "T"
+    },
+    {
+      "Codon": "ACA",
+      "AminoAcid": "T"
+    },
+    {
+      "Codon": "ACG",
+      "AminoAcid": "T"
+    },
+    {
+      "Codon": "TGG",
+      "AminoAcid": "W"
+    },
+    {
+      "Codon": "TAT",
+      "AminoAcid": "Y"
+    },
+    {
+      "Codon": "TAC",
+      "AminoAcid": "Y"
+    },
+    {
+      "Codon": "GTT",
+      "AminoAcid": "V"
+    },
+    {
+      "Codon": "GTC",
+      "AminoAcid": "V"
+    },
+    {
+      "Codon": "GTA",
+      "AminoAcid": "V"
+    },
+    {
+      "Codon": "GTG",
+      "AminoAcid": "V"
+    }
+  ]
+}
