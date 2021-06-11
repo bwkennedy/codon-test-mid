@@ -1,4 +1,10 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Xml;
 
 namespace InterviewQuestions
 {
@@ -34,16 +40,33 @@ namespace InterviewQuestions
      *  
      */
 
+    public class CodonTable
+    {
+        public HashSet<string> Starts;
+        public HashSet<string> Stops;
+        // Wanted to use Dictionary here, but struggled getting it to work with json.
+        public HashSet<CodonPair> CodonMap;
+    }
+    public class CodonPair
+    {
+        public string Codon;
+        public string AminoAcid;
+    }
 
     public class CodonTranslator
     {
-
+        public CodonTable codonTable = new CodonTable();
+        
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="codonTableFileName">Filename of the DNA codon table.</param>
         public CodonTranslator(string codonTableFileName)
         {
+            // Initialize HashSets.
+            codonTable.Starts = new HashSet<string>();
+            codonTable.Stops = new HashSet<string>();
+            codonTable.CodonMap = new HashSet<CodonPair>();
             var file = new StreamReader(codonTableFileName);
             var fileContent = file.ReadToEnd();
             BuildTranslationMapFromFileContent(fileContent, Path.GetExtension(codonTableFileName));
@@ -51,7 +74,66 @@ namespace InterviewQuestions
 
         private void BuildTranslationMapFromFileContent(string fileContent, string fileType)
         {
-            throw new System.NotImplementedException(string.Format("The contents of the file with type \"{0}\" have been loaded, please make use of it.\n{1}",fileType,fileContent));
+            if (fileType == ".xml")
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(fileContent);
+                XmlNodeList startNodes = xmlDoc.SelectNodes("Data/Starts/string");
+                foreach (XmlNode childNode in startNodes)
+                {
+                    codonTable.Starts.Add(childNode.InnerText);
+                }
+                var endNodes = xmlDoc.SelectNodes("Data/Stops/string");
+                foreach (XmlNode childNode in endNodes)
+                {
+                    codonTable.Stops.Add(childNode.InnerText);
+                }
+                XmlNodeList codonPairs = xmlDoc.SelectNodes("Data/CodonMap/CodonPair");
+                foreach (XmlNode childNode in codonPairs)
+                {
+                    CodonPair codonPair = new CodonPair();
+                    codonPair.Codon = childNode["Codon"].InnerText;
+                    codonPair.AminoAcid = childNode["AminoAcid"].InnerText;
+                    codonTable.CodonMap.Add(codonPair);
+                }
+            }
+            else if (fileType == ".json")
+            {
+                codonTable = JsonConvert.DeserializeObject<CodonTable>(fileContent);
+            }
+            else if (fileType == ".csv")
+            {
+                string[] codons = fileContent.Split(
+                   new[] { "\r\n", "\r", "\n" },
+                   StringSplitOptions.None
+               );
+                foreach (string codonMap in codons)
+                {
+                    string[] temp = codonMap.Split(',');
+                    string codon = temp[0];
+                    string aminoAcid = temp[1];
+                    if (aminoAcid == "START")
+                    {
+                        codonTable.Starts.Add(codon);
+                    }
+                    else if (aminoAcid == "STOP")
+                    {
+                        codonTable.Stops.Add(codon);
+                    }
+                    else
+                    {
+                        CodonPair codonPair = new CodonPair();
+                        codonPair.Codon = codon;
+                        codonPair.AminoAcid = aminoAcid;
+                        codonTable.CodonMap.Add(codonPair);
+                    }
+                }
+            }
+            else
+            {
+                throw new System.NotImplementedException(string.Format("File of type {0} is not supported", fileType));
+
+            }
         }
 
         /// <summary>
@@ -61,7 +143,40 @@ namespace InterviewQuestions
         /// <returns>Amino acid sequence</returns>
         public string Translate(string dna)
         {
-            return "";
+            StringBuilder aminoAcid = new StringBuilder();
+            for (int i = 0; i < dna.Length; i++)
+            {
+                string codon = dna.Substring(i, 3);
+                if (codonTable.Starts.Contains(codon))
+                {
+                    foreach (CodonPair pair in codonTable.CodonMap)
+                    {
+                        if (pair.Codon == codon)
+                        {
+                            aminoAcid.Append(pair.AminoAcid);
+                            break;
+                        }
+                    }
+                    for (int j = i + 3; j < dna.Length; j += 3)
+                    {
+                        codon = dna.Substring(j, 3);
+                        foreach (CodonPair pair in codonTable.CodonMap)
+                        {
+                            if (pair.Codon == codon)
+                            {
+                                aminoAcid.Append(pair.AminoAcid);
+                                break;
+                            }
+                        }
+                        if (codonTable.Stops.Contains(codon))
+                        {
+                            return aminoAcid.ToString();
+                        }
+
+                    }
+                }
+            }
+            return aminoAcid.ToString();
         }
     }
 }
